@@ -1,14 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void todo_add();
+void todo_add(int argc, char *argv[]);
 void todo_list();
-void todo_remove();
+void todo_remove(int line);
 void todo_help();
+
+typedef struct {
+	int index;
+	char *body;
+} todo_item;
+
+typedef struct {
+	char *type;
+	char *args;
+} todo_command;
 
 /* TODO: change to switch statement */
 void parse_input(int argc, char *argv[])
-{
+{	
+	todo_command cmd;
+	cmd.type = argv[1];
 	if(strcmp(argv[1], "-a") == 0) {
 		todo_add(argc, argv);
 	} else if(strcmp(argv[1], "-l") == 0) {
@@ -30,7 +42,7 @@ void todo_add(int argc, char *argv[])
 	char todo_buffer[1000];
 	int i;
 
-	printf("Adding todo: \"");
+	printf("[TODOCMD]: Adding todo: \"");
 	for(i = 2; i < argc; i++) {
 		if(i < argc-1) {
 			printf("%s ", argv[i]);
@@ -63,6 +75,7 @@ void todo_list()
 	FILE *todo_file;
 	char buffer[1000];
 
+	printf("[TODOCMD]: todo.txt\n");
 	todo_file = fopen("todo.txt", "r");
 	if(!todo_file) exit(EXIT_FAILURE);
 
@@ -80,7 +93,7 @@ void todo_remove(int line)
 	int count = 0;
 	int i = 0;
 
-	printf("Deleting Todo: %d\n", line);
+	printf("[TODOCMD]: Deleting Todo: %d\n", line);
 	todo_file = fopen("todo.txt", "r");
 	tmp = fopen("tmp.txt", "w");
 
