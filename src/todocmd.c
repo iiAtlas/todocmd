@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
-void todo_add(int argc, char *argv[]);
-void todo_list();
-void todo_remove(int line);
-void todo_help();
+#define MAX_DATA 1000
 
 typedef struct {
 	int index;
@@ -13,59 +11,74 @@ typedef struct {
 
 typedef struct {
 	char *type;
-	char *args;
+	char *args[MAX_DATA];
+	int arg_num;
+	char *todo_filename;
+	char *done_filename;
 } todo_command;
 
-/* TODO: change to switch statement */
-void parse_input(int argc, char *argv[])
-{	
-	todo_command cmd;
-	cmd.type = argv[1];
-	if(strcmp(argv[1], "-a") == 0) {
-		todo_add(argc, argv);
-	} else if(strcmp(argv[1], "-l") == 0) {
-		todo_list();
-	} else if(strcmp(argv[1], "-r") == 0 && argv[2] != NULL) {
-		int line;
-		line = atoi(argv[2]);
-		todo_remove(line);
-	} else if(strcmp(argv[1], "-h") == 0) {
-		todo_help();
-	} else {
-		printf("-todocmd: command not found\nType \"help\" or \"-h\" for help\n");
-	}
-}
+void make_command(int argc, char *argv[]);
+void command_selector(todo_command *cmd);
+void todo_add(todo_command *cmd);
+void todo_help();
+void todo_list();
+void todo_remove(int line);
 
-void todo_add(int argc, char *argv[])
+/* TODO: Add File Setting, Move If-Else to New Func */
+void todo_add(todo_command *cmd)
 {
+//	FILE *todo_file;
+//	char todo_buffer[1000];
+//	int i;
+//
+//	printf("[TODOCMD]: Adding todo: \"");
+//	for(i = 2; i < argc; i++) {
+//		if(i < argc-1) {
+//			printf("%s ", argv[i]);
+//		} else {
+//			printf("%s", argv[i]);
+//		}
+//	}
+//	printf("\"\n");
+//
+//	todo_file = fopen("todo.txt", "a+");
+//	if(!todo_file) exit(EXIT_FAILURE);
+//
+//	if(argv[2] == NULL) exit(EXIT_FAILURE);
+//	fputs("-", todo_file);
+//	for(i = 2; i <= argc; i++) {
+//		if(i < argc) {
+//			fputs(argv[i], todo_file);
+//			fputs(" ", todo_file);
+//		} else {
+//			fputs("\n", todo_file);
+//		}
+//	}
+//	fclose(todo_file);
+//
+//	exit(EXIT_SUCCESS);
+
 	FILE *todo_file;
-	char todo_buffer[1000];
+	char buffer[MAX_DATA];
 	int i;
 
-	printf("[TODOCMD]: Adding todo: \"");
-	for(i = 2; i < argc; i++) {
-		if(i < argc-1) {
-			printf("%s ", argv[i]);
-		} else {
-			printf("%s", argv[i]);
-		}
-	}
-	printf("\"\n");
+	todo_file = fopen(cmd->todo_filename, "a+");
+	assert(todo_file);
 
-	todo_file = fopen("todo.txt", "a+");
-	if(!todo_file) exit(EXIT_FAILURE);
+	//print_todo();
+	printf("In Add");
 
-	if(argv[2] == NULL) exit(EXIT_FAILURE);
-	fputs("-", todo_file);
-	for(i = 2; i <= argc; i++) {
-		if(i < argc) {
-			fputs(argv[i], todo_file);
+	for(i = 2; i < cmd->arg_num; i++) {
+		if(i < cmd->arg_num) {
+			fputs(cmd->args[i], todo_file);
 			fputs(" ", todo_file);
 		} else {
 			fputs("\n", todo_file);
 		}
 	}
+
 	fclose(todo_file);
+	free(cmd);
 
 	exit(EXIT_SUCCESS);
 }
@@ -123,10 +136,46 @@ void todo_help()
 	exit(EXIT_SUCCESS);
 }
 
+void make_command(int argc, char *argv[])
+{	
+	int i;
+
+	todo_command *cmd = malloc(sizeof(todo_command));
+	assert(cmd);
+
+	cmd->type = argv[1];
+	for(i = 2; i < argc; i++) {
+		cmd->args[i] = argv[i];
+	}
+	cmd->arg_num = argc;
+
+	cmd->todo_filename = "todo.txt";
+	cmd->done_filename = "done.txt";
+
+	command_selector(cmd);
+}
+
+void command_selector(todo_command *cmd)
+{
+	if(strcmp(cmd->type[1], "-a") == 0) {
+		todo_add(cmd);
+	} else if(strcmp(cmd->type[1], "-l") == 0) {
+		//todo_list();
+	} else if(strcmp(cmd->type[1], "-r") == 0 && cmd->args[1] != NULL) {
+		//int line;
+		//line = atoi(argv[2]);
+		//todo_remove(line);
+	} else if(strcmp(cmd->type[1], "-h") == 0) {
+		//todo_help();
+	} else {
+		printf("-todocmd: command not found\nType \"help\" or \"-h\" for help\n");
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	if(argc > 1) {
-		parse_input(argc, argv);
+		make_command(argc, argv);
 	} else {
 		printf("No Input Recieved. Shutting Down.\n");
 	}
