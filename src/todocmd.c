@@ -5,11 +5,6 @@
 #define MAX_DATA 1000
 
 typedef struct {
-	int index;
-	char *body;
-} todo_item;
-
-typedef struct {
 	char *type;
 	char *args[MAX_DATA];
 	int arg_num;
@@ -91,14 +86,14 @@ void todo_remove(todo_command *cmd)
 	todo_file = fopen(cmd->todo_filename, "r");
 	tmp = fopen("tmp.txt", "w");
 
-	/* TODO: create external function to allow for use in multiple cases */
-	/* Hacked Together Line Counter */
+	/* TODO: Change Line-Counter into External Function
+	 * Use Recursion to Loop Through todo_remove
+	 */
 	while((i = fgets(buffer, sizeof(buffer), todo_file) != NULL)) {
 		if(i == 1) count++;
 		if(count != line) fprintf(tmp, "%s", buffer);
 	}
 
-	/* TODO: change to freopen() */
 	fclose(todo_file);
 	fclose(tmp);
 	todo_file = fopen(cmd->todo_filename, "w");
@@ -115,10 +110,10 @@ void todo_help()
 {
 	printf("[TODOCMD HELP]:\n");
 
-	printf("-Adding Todo: todocmd -a [todo_text]\n");
-	printf("-Removing Todo: todocmd -r [todo_index]\n");
-	printf("-Listing Todos: todocmd -l\n");
-	printf("-Todocmd Help: todocmd -h\n");
+	printf("1. Adding Todo: todocmd -a [todo_text]\n");
+	printf("2. Removing Todo: todocmd -r [todo_index]\n");
+	printf("3. Listing Todos: todocmd -l\n");
+	printf("4. Todocmd Help: todocmd -h\n");
 
 	printf("[END TODOCMD HELP]\n");
 
@@ -161,6 +156,7 @@ void command_selector(todo_command *cmd)
 
 int main(int argc, char *argv[])
 {
+	printf("TODOCMD - v0.1.0\n------\n");
 	if(argc > 1) {
 		make_command(argc, argv);
 	} else {
