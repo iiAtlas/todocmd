@@ -1,6 +1,7 @@
 ### todocmd ###
 A Todo App That Learns Your Habits -
 Automate Your Schedule
+###### README UNDER CONSTRUCTION ######
 
 #### installation ####
 Makefile Under Construction -
