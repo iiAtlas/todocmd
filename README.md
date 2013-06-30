@@ -1,8 +1,10 @@
 ### todocmd ###
-Todocmd is a todo app that learns your habits and customizes your todo list based on your history.
+A Todo App That Learns Your Habits -
+Automate Your Schedule
+
 #### installation ####
-Basic Installation: `make`
-Install and Create Alias (t): `make alias`
+Makefile Under Construction -
+Build With: `gcc todocmd.c -o todocmd.o`
 
 #### commands ####
 Add todo: `todo -a [todo]`
