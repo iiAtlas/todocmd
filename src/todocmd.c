@@ -62,15 +62,16 @@ void todo_list(todo_command *cmd)
 	char buffer[1000];
 
 	printf("[TODO FILE]: %s\n", cmd->todo_filename);
-	todo_file = fopen(cmd->todo_filename, "r");
-	assert(todo_file);
+	if(todo_file = fopen(cmd->todo_filename, "r")) {
+		assert(todo_file);
 
-	while(fgets(buffer, 1000, todo_file) != NULL) printf("%s", buffer);
-	fclose(todo_file);
+		while(fgets(buffer, 1000, todo_file) != NULL) printf("%s", buffer);
+		fclose(todo_file);
 
-	printf("[END TODOS]: %s\n", cmd->todo_filename);
+		printf("[END TODOS]: %s\n", cmd->todo_filename);
 
-	exit(EXIT_SUCCESS);
+		exit(EXIT_SUCCESS);	
+	}else exit(EXIT_FAILURE);
 }
 
 void todo_remove(todo_command *cmd)
